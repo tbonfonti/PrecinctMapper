@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Precinct Mapper</title>
+    <link rel="stylesheet" href="src/styles.css" />
+  </head>
+  <body>
+    <main>
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Precinct Mapper</p>
+          <h1>Compare yearly CSVs and find the precincts falling behind.</h1>
+          <p>Upload one or more single-year CSV files, persist the data in your browser, generate precinct boundaries from address points, and visualize the biggest declines as a heat map.</p>
+        </div>
+        <article class="stat-card"><strong id="fileCount">0</strong><span>uploaded files</span></article>
+        <article class="stat-card"><strong id="behindCount">0</strong><span>behind precincts</span></article>
+      </header>
+
+      <section class="grid two">
+        <section class="panel">
+          <h2>Upload yearly CSV data</h2>
+          <label>Year for selected file(s)<input id="uploadYear" type="number" /></label>
+          <label class="dropzone">Choose one or more CSV files<input id="csvInput" type="file" accept=".csv,text/csv" multiple /></label>
+          <div class="button-row">
+            <button id="buildMap">Build / refresh map geometry</button>
+            <button id="clearData" class="secondary danger">Clear uploaded data</button>
+          </div>
+          <p id="geocodeProgress" class="muted">No geocoding in progress.</p>
+        </section>
+
+        <section class="panel">
+          <h2>Comparison settings</h2>
+          <div class="form-grid">
+            <label>Comparison year<select id="comparisonYear"></select></label>
+            <label>Baseline<select id="baselineMode"><option value="previous">Previous year</option><option value="average">Average prior years</option><option value="best">Best prior year</option><option value="specific">Specific year</option></select></label>
+            <label id="baselineYearWrap">Baseline year<select id="baselineYear"></select></label>
+            <label>Behind means<select id="direction"><option value="lowerIsBehind">Lower than baseline</option><option value="higherIsBehind">Higher than baseline</option></select></label>
+          </div>
+          <h3>Metrics and weights</h3>
+          <div id="metrics"></div>
+          <button id="addMetric" class="secondary">Add metric</button>
+        </section>
+      </section>
+
+      <section id="messages" class="messages hidden"></section>
+
+      <section class="map-section">
+        <div class="section-title"><h2>Behind baseline heat map</h2><p>Darker red means further behind; blue means not behind or improved.</p></div>
+        <div class="map-shell">
+          <svg id="mapSvg" role="img" aria-label="Generated precinct heat map"></svg>
+          <div class="map-note">Generated precinct boundaries are convex hulls around geocoded/uploaded address points.</div>
+        </div>
+      </section>
+
+      <section class="panel full">
+        <h2>Most behind precincts</h2>
+        <div class="table-wrap"><table><thead><tr><th>Rank</th><th>Precinct</th><th>Comparison</th><th>Baseline</th><th>Absolute Δ</th><th>% Δ</th><th>Behind score</th></tr></thead><tbody id="resultsBody"></tbody></table></div>
+      </section>
+
+      <section class="panel full">
+        <h2>Persisted uploads</h2>
+        <div id="fileInventory" class="file-list"></div>
+      </section>
+    </main>
+    <script type="module" src="src/app.js"></script>
+  </body>
+</html>
